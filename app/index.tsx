@@ -1,99 +1,95 @@
-import { Redirect, router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import CustomButton from '../components/CustomButton';
+import { Icon } from '@roninoss/icons';
+import { Link } from 'expo-router';
+import { Platform, View, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import Loader from '../components/Loader';
-import { Session } from '@supabase/supabase-js';
 
-export default function App() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+import { Button } from '../components/nativewindui/Button';
+import { Text } from '../components/nativewindui/Text';
+import { useColorScheme } from '../lib/useColorScheme';
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+const ROOT_STYLE: ViewStyle = { flex: 1 };
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) {
-    return <Loader isLoading={loading} />;
-  }
-
-  if (session && session.user) {
-    return <Redirect href='/home' />;
-  }
-
+export default function WelcomeConsentScreen() {
+  const { colors } = useColorScheme();
   return (
-    <SafeAreaView className="bg-[#0a4627] h-full">
-      <ScrollView
-        contentContainerStyle={{
-          height: "100%",
-        }}
-      >
-        <View className="w-full flex justify-center items-center h-full px-4">
-          {/* Logo */}
-          <Image
-            source={require('../assets/images/icon.png')} // Replace with your TeaBridge logo
-            className="h-[80px] w-[200px]"
-            resizeMode="contain"
-          />
-
-          {/* Banner Image */}
-          <Image
-            source={require('../assets/images/about2.png')} // Add a tea-related banner
-            className="max-w-[380px] w-full h-[250px] mt-5"
-            resizeMode="cover"
-            style={{ borderRadius: 12 }}
-          />
-
-          {/* Welcome Text */}
-          <View className="relative mt-5">
-            <Text className="text-3xl text-white font-bold text-center">
-              Welcome to{" "}
-              <Text className="text-[#22d607]">TeaBridge</Text>
-            </Text>
-
-            <Text className="text-lg text-gray-100 mt-4 text-center">
-              Streamline tea industry management effortlessly. Connect suppliers, buyers, and factories with ease.
+    <SafeAreaView style={ROOT_STYLE}>
+      <View className="mx-auto max-w-sm flex-1 justify-between gap-4 px-8 py-4 ">
+        <View className="ios:pt-8 pt-12">
+          <Text variant="largeTitle" className="ios:text-left ios:font-black text-center font-bold">
+            Welcome to your
+          </Text>
+          <Text
+            variant="largeTitle"
+            className="ios:text-left ios:font-black text-primary text-center font-bold">
+            Application
+          </Text>
+        </View>
+        <View className="gap-8">
+          {FEATURES.map((feature) => (
+            <View key={feature.title} className="flex-row gap-4">
+              <View className="pt-px">
+                <Icon
+                  name={feature.icon}
+                  size={38}
+                  color={colors.primary}
+                  ios={{ renderingMode: 'hierarchical' }}
+                />
+              </View>
+              <View className="flex-1">
+                <Text className="font-bold">{feature.title}</Text>
+                <Text variant="footnote">{feature.description}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+        <View className="gap-4">
+          <View className="items-center">
+            <Icon
+              name="account-multiple"
+              size={24}
+              color={colors.primary}
+              ios={{ renderingMode: 'hierarchical' }}
+            />
+            <Text variant="caption2" className="pt-1 text-center">
+              By pressing continue, you agree to our{' '}
+              <Link href="/">
+                <Text variant="caption2" className="text-primary">
+                  Terms of Service
+                </Text>
+              </Link>{' '}
+              and that you have read our{' '}
+              <Link href="/">
+                <Text variant="caption2" className="text-primary">
+                  Privacy Policy
+                </Text>
+              </Link>
             </Text>
           </View>
-
-          {/* CTA Button */}
-          <CustomButton
-            title="Continue with Email"
-            handlePress={() => router.push("/login")}
-            containerStyles={{
-              width: '100%',
-              marginTop: 28,
-              backgroundColor: '#22d607',
-              borderRadius: 10,
-            }}
-            textStyles={{
-              color: '#fff',
-              fontWeight: 'bold',
-            }}
-          />
+          <Link href="../" replace asChild>
+            <Button size={Platform.select({ ios: 'lg', default: 'md' })}>
+              <Text>Continue</Text>
+            </Button>
+          </Link>
         </View>
-      </ScrollView>
-
-      {/* Footer */}
-      <View className="absolute bottom-4 w-full flex items-center">
-        <Text className="text-gray-200 text-sm">
-          Empowering Sri Lanka's tea industry
-        </Text>
       </View>
-
-      <StatusBar backgroundColor="#0a4627" style="light" />
     </SafeAreaView>
   );
 }
+
+const FEATURES = [
+  {
+    title: 'Profile Management',
+    description: 'Easily update and manage your personal information, settings, and preferences',
+    icon: 'account-circle-outline',
+  },
+  {
+    title: 'Secure Messaging',
+    description: 'Chat securely with friends and family in real-time.',
+    icon: 'message-processing',
+  },
+  {
+    title: 'Activity Tracking',
+    description: 'Monitor your daily activities and track your progress over time.',
+    icon: 'chart-timeline-variant',
+  },
+] as const;

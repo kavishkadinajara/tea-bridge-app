@@ -15,27 +15,61 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+
+  // Load custom fonts
+  const [fontsLoaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    // PoppinsRegular: require('../assets/fonts/Poppins-Regular.ttf'),
+    // PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded]);
 
-  if (!loaded) {
-    return null;
+  if (!fontsLoaded) {
+    return null; // Prevent rendering until fonts are loaded
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider
+      value={{
+        ...(colorScheme === 'dark' ? DarkTheme : DefaultTheme),
+        colors: {
+          ...((colorScheme === 'dark' ? DarkTheme : DefaultTheme).colors),
+          background: colorScheme === 'dark' ? '#121212' : '#ffffff',
+          primary: '#22d607', // Highlight color (TeaBridge theme green)
+          card: colorScheme === 'dark' ? '#1E1E1E' : '#f8f9fa',
+          text: colorScheme === 'dark' ? '#ffffff' : '#333333',
+          border: colorScheme === 'dark' ? '#272727' : '#cccccc',
+        },
+      }}
+    >
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="+not-found"
+          options={{
+            title: 'Not Found',
+            headerStyle: {
+              backgroundColor: colorScheme === 'dark' ? '#1E1E1E' : '#f8f9fa',
+            },
+            headerTintColor: colorScheme === 'dark' ? '#ffffff' : '#333333',
+          }}
+        />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar
+        style={colorScheme === 'dark' ? 'light' : 'dark'}
+        backgroundColor={colorScheme === 'dark' ? '#121212' : '#ffffff'}
+        translucent
+      />
     </ThemeProvider>
   );
 }
