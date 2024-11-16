@@ -43,14 +43,14 @@ export default function App() {
         <View className="w-full flex justify-center items-center h-full px-4">
           {/* Logo */}
           <Image
-            source={require('../assets/teabridge_logo.png')} // Replace with your TeaBridge logo
+            source={require('../assets/images/icon.png')} // Replace with your TeaBridge logo
             className="h-[80px] w-[200px]"
             resizeMode="contain"
           />
 
           {/* Banner Image */}
           <Image
-            source={require('../assets/tea_leaves.png')} // Add a tea-related banner
+            source={require('../assets/images/about2.png')} // Add a tea-related banner
             className="max-w-[380px] w-full h-[250px] mt-5"
             resizeMode="cover"
             style={{ borderRadius: 12 }}
