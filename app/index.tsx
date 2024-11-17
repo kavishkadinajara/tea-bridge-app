@@ -96,7 +96,7 @@ export default function WelcomeConsentScreen() {
           </View>
 
           {/* Continue Button */}
-          <Link href="../login" replace asChild>
+          <Link href="/(auth)/login" replace asChild>
             <Button
               size={Platform.select({ ios: 'lg', default: 'md' })}
               className="bg-[#22d607] rounded-lg shadow-lg hover:bg-[#1cb906]"

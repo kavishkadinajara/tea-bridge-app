@@ -2,6 +2,9 @@ import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { useColorScheme } from '@/hooks/useColorScheme';
+import '../global.css';
+import 'expo-dev-client';
 
 const RootLayout = () => {
   return (
